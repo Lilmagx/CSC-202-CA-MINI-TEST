@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block extra_style %}
+.result-hero { text-align:center; margin-bottom:28px; }
+.big-score { font-size:3.5rem; font-weight:800; color:#e94560; }
+.grade { font-size:1.3rem; color:#a0c4ff; margin:8px 0; }
+.meta-row { display:flex; gap:20px; justify-content:center; flex-wrap:wrap; margin-top:10px; color:#aaa; font-size:.9rem; }
+.answers-list { margin-top:8px; }
+.answer-row {
+  display:flex; align-items:flex-start; gap:12px;
+  padding:12px 0;
+  border-bottom:1px solid rgba(255,255,255,0.07);
+  font-size:.92rem;
+}
+.icon { font-size:1.2rem; flex-shrink:0; }
+.q-text { color:#ddd; margin-bottom:3px; }
+.q-detail { color:#888; font-size:.84rem; }
+.correct-text { color:#4caf50; font-weight:600; }
+.wrong-text { color:#e94560; font-weight:600; }
+.btn-row { display:flex; gap:12px; justify-content:center; margin-top:28px; flex-wrap:wrap; }
+{% endblock %}
+
+{% block content %}
+<div class="card">
+  <div class="result-hero">
+    <div class="big-score">{{ summary.score }}/{{ summary.total }}</div>
+    <div class="grade">{{ summary.grade }}</div>
+    <div class="meta-row">
+      <span>👤 {{ summary.player_name }}</span>
+      <span>📊 {{ summary.percentage }}%</span>
+      {% if summary.duration %}<span>⏱ {{ summary.duration }}</span>{% endif %}
+      <span>🕐 {{ summary.submitted_at }}</span>
+    </div>
+  </div>
+
+  <h2 style="margin-bottom:12px;">Answer Breakdown</h2>
+  <div class="answers-list">
+    {% for a in summary.answers %}
+    <div class="answer-row">
+      <span class="icon">{{ "✅" if a.is_correct else "❌" }}</span>
+      <div>
+        <div class="q-text">{{ a.question }}</div>
+        <div class="q-detail">
+          🌍 <strong>{{ a.country }}</strong> &nbsp;|&nbsp;
+          Your answer: <span class="{{ 'correct-text' if a.is_correct else 'wrong-text' }}">{{ a.user_answer }}</span>
+          {% if not a.is_correct %}
+            &nbsp;→ Correct: <span class="correct-text">{{ a.correct_answer }}</span>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <div class="btn-row">
+    <a href="/" class="btn btn-primary">🔄 Play Again</a>
+    <a href="/leaderboard" class="btn btn-secondary">🏆 Leaderboard</a>
+  </div>
+</div>
+{% endblock %}
