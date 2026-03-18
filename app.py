@@ -42,3 +42,66 @@ def start_quiz():
 
     return redirect(url_for("quiz_question"))
 
+# ──────────────────────────────────────────────
+# Route 3 – Display / Answer a Question
+# ──────────────────────────────────────────────
+@app.route("/quiz", methods=["GET", "POST"])
+def quiz_question():
+    session_id = session.get("session_id")
+    quiz: QuizSession = quiz_sessions.get(session_id)
+
+    if not quiz:
+        return redirect(url_for("index"))
+
+    if request.method == "POST":
+        # User submitted an answer
+        answer = request.form.get("answer", "")
+        current_q_data = session.get("current_question")
+        if current_q_data and answer:
+            # Reconstruct the Question object from stored dict
+            from models import Question
+            q = Question(
+                current_q_data["question_text"],
+                current_q_data["options"],
+                current_q_data["correct_answer"],
+                current_q_data["country"],
+            )
+            quiz.submit_answer(q, answer)
+
+        # Check if queue is empty
+        if not quiz.question_queue:
+            quiz.finish()
+            summary = quiz.get_result_summary()
+            results_history.push(summary)
+            session["result"] = summary
+            return redirect(url_for("results"))
+
+        # Dequeue next question (FIFO)
+        next_q = quiz.get_next_question()
+        session["current_question"] = next_q.to_dict()
+        session["q_index"] = session.get("q_index", 0) + 1
+        total = len(quiz.answers) + len(quiz.question_queue) + 1
+        return render_template(
+            "quiz.html",
+            question=next_q,
+            q_number=session["q_index"],
+            total=total,
+            player_name=quiz.player_name,
+        )
+
+    # GET — serve the first question
+    first_q = quiz.get_next_question()
+    if not first_q:
+        return redirect(url_for("index"))
+
+    session["current_question"] = first_q.to_dict()
+    total = len(get_question_bank())
+    return render_template(
+        "quiz.html",
+        question=first_q,
+        q_number=1,
+        total=total,
+        player_name=quiz.player_name,
+    )
+
+
