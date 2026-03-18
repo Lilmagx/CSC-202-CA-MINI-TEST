@@ -11,3 +11,7 @@ class Question:
         self.correct_answer = correct_answer   # e.g. "A"
         self.country = country
         self.created_at = datetime.now()
+
+    def check_answer(self, user_answer):
+        """Returns True if the user's answer matches the correct answer."""
+        return user_answer.strip().upper() == self.correct_answer.strip().upper()
