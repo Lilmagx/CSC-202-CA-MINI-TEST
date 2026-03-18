@@ -23,4 +23,16 @@ class Question:
             "correct_answer": self.correct_answer,
             "country": self.country,
         }
+    
+class QuizSession:
+    """Manages a quiz session using a Queue (FIFO) of questions."""
+
+    def __init__(self, player_name):
+        self.player_name = player_name
+        self.question_queue = deque()   # FIFO Queue — Data Structure requirement
+        self.answers = []               # list of (question, user_answer, is_correct)
+        self.score = 0
+        self.start_time = datetime.now()
+        self.end_time = None
+        self.submitted = False
 
