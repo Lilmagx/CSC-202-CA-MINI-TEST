@@ -84,5 +84,131 @@ class QuizSession:
             "submitted_at": self.end_time.strftime("%Y-%m-%d %H:%M:%S") if self.end_time else "",
             "answers": self.answers,
         }
+    
+    # --- Shared question bank ---
+
+def get_question_bank():
+    """Returns a list of Question objects about world countries."""
+    data = [
+        Question(
+            "What is the capital city of Japan?",
+            ["A. Beijing", "B. Seoul", "C. Tokyo", "D. Bangkok"],
+            "C", "Japan"
+        ),
+        Question(
+            "Which country has the largest population in the world?",
+            ["A. USA", "B. India", "C. Russia", "D. Brazil"],
+            "B", "India"
+        ),
+        Question(
+            "What is the official language of Brazil?",
+            ["A. Spanish", "B. French", "C. Portuguese", "D. English"],
+            "C", "Brazil"
+        ),
+        Question(
+            "Which country is both a continent and a country?",
+            ["A. Greenland", "B. Antarctica", "C. Australia", "D. Iceland"],
+            "C", "Australia"
+        ),
+        Question(
+            "What is the currency of Germany?",
+            ["A. Pound", "B. Franc", "C. Lira", "D. Euro"],
+            "D", "Germany"
+        ),
+        Question(
+            "Which country has the longest coastline in the world?",
+            ["A. Norway", "B. Canada", "C. Russia", "D. USA"],
+            "B", "Canada"
+        ),
+        Question(
+            "In which country would you find the ancient ruins of Machu Picchu?",
+            ["A. Mexico", "B. Colombia", "C. Peru", "D. Chile"],
+            "C", "Peru"
+        ),
+        Question(
+            "What is the smallest country in the world by area?",
+            ["A. Monaco", "B. San Marino", "C. Liechtenstein", "D. Vatican City"],
+            "D", "Vatican City"
+        ),
+        Question(
+            "Which African country has the most pyramids?",
+            ["A. Egypt", "B. Sudan", "C. Ethiopia", "D. Libya"],
+            "B", "Sudan"
+        ),
+        Question(
+            "What is the capital of Canada?",
+            ["A. Toronto", "B. Vancouver", "C. Ottawa", "D. Montreal"],
+            "C", "Canada"
+        ),
+        Question(
+            "Which country is home to the Great Wall?",
+            ["A. Japan", "B. Mongolia", "C. China", "D. South Korea"],
+            "C", "China"
+        ),
+        Question(
+            "What is the capital city of Nigeria?",
+            ["A. Lagos", "B. Kano", "C. Ibadan", "D. Abuja"],
+            "D", "Nigeria"
+        ),
+        Question(
+            "Which country invented the sport of cricket?",
+            ["A. Australia", "B. India", "C. England", "D. South Africa"],
+            "C", "England"
+        ),
+        Question(
+            "What is the largest country in the world by land area?",
+            ["A. Canada", "B. USA", "C. China", "D. Russia"],
+            "D", "Russia"
+        ),
+        Question(
+            "Which country is known as the 'Land of the Rising Sun'?",
+            ["A. China", "B. Japan", "C. South Korea", "D. Vietnam"],
+            "B", "Japan"
+        ),
+        Question(
+            "What is the capital of Argentina?",
+            ["A. Santiago", "B. Lima", "C. Buenos Aires", "D. Montevideo"],
+            "C", "Argentina"
+        ),
+        Question(
+            "Which country has the most natural lakes in the world?",
+            ["A. Russia", "B. USA", "C. Finland", "D. Canada"],
+            "D", "Canada"
+        ),
+        Question(
+            "In which country is the Sahara Desert located?",
+            ["A. It spans multiple countries", "B. Egypt only", "C. Libya only", "D. Algeria only"],
+            "A", "Africa"
+        ),
+        Question(
+            "What is the official currency of Japan?",
+            ["A. Yuan", "B. Won", "C. Yen", "D. Baht"],
+            "C", "Japan"
+        ),
+    ]
+    return data
+
+
+# Stack for recent quiz history (LIFO) — also fulfills Data Structure requirement
+class ResultsHistory:
+    """Keeps a LIFO Stack of recent quiz results for the leaderboard."""
+
+    def __init__(self, max_size=10):
+        self._stack = []
+        self.max_size = max_size
+
+    def push(self, result):
+        if len(self._stack) >= self.max_size:
+            self._stack.pop(0)   # remove oldest
+        self._stack.append(result)
+
+    def get_recent(self):
+        """Return results newest-first (LIFO order)."""
+        return list(reversed(self._stack))
+
+
+# Global results history instance
+results_history = ResultsHistory()
+
 
 
