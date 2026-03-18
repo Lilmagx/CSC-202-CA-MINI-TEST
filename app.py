@@ -104,4 +104,27 @@ def quiz_question():
         player_name=quiz.player_name,
     )
 
+# ──────────────────────────────────────────────
+# Route 4 – Results Page (timestamped)
+# ──────────────────────────────────────────────
+@app.route("/results")
+def results():
+    summary = session.get("result")
+    if not summary:
+        return redirect(url_for("index"))
+    return render_template("results.html", summary=summary)
+
+
+# ──────────────────────────────────────────────
+# Route 5 – Leaderboard (Recently Completed)
+# ──────────────────────────────────────────────
+@app.route("/leaderboard")
+def leaderboard():
+    recent = results_history.get_recent()
+    return render_template("leaderboard.html", recent_results=recent)
+
+
+if __name__ == "__main__":
+    app.run(debug=True)
+
 
