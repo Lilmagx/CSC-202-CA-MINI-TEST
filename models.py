@@ -36,3 +36,14 @@ class QuizSession:
         self.end_time = None
         self.submitted = False
 
+    def load_questions(self, questions):
+        """Enqueue all questions into the FIFO queue."""
+        for q in questions:
+            self.question_queue.append(q)
+
+    def get_next_question(self):
+        """Dequeue and return the next question (FIFO)."""
+        if self.question_queue:
+            return self.question_queue.popleft()
+        return None
+
