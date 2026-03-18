@@ -65,4 +65,24 @@ class QuizSession:
         self.end_time = datetime.now()
         self.submitted = True
 
+    def get_result_summary(self):
+        """Return a summary dict for the results page."""
+        total = len(self.answers)
+        percentage = round((self.score / total) * 100, 1) if total > 0 else 0
+        duration = None
+        if self.end_time:
+            seconds = int((self.end_time - self.start_time).total_seconds())
+            duration = f"{seconds // 60}m {seconds % 60}s"
+        grade = "Excellent 🏆" if percentage >= 80 else "Good 👍" if percentage >= 50 else "Keep Practising 📚"
+        return {
+            "player_name": self.player_name,
+            "score": self.score,
+            "total": total,
+            "percentage": percentage,
+            "grade": grade,
+            "duration": duration,
+            "submitted_at": self.end_time.strftime("%Y-%m-%d %H:%M:%S") if self.end_time else "",
+            "answers": self.answers,
+        }
+
 
